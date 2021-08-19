@@ -1,5 +1,6 @@
 package com.newton.resources;
 
+import com.newton.exceptions.EmptyHeapExceptions;
 import com.newton.interfaces.IArrayHeap;
 
 public class ArrayHeap implements IArrayHeap {
@@ -15,8 +16,9 @@ public class ArrayHeap implements IArrayHeap {
 
     @Override
     public void insert(Integer element) {
-        if (this.next_space > this.capacity) {
-            //resize
+        if (this.next_space >= this.capacity) {
+            System.out.println("Allocating more space...");
+            this.resize();
         } {
             this.heap[this.next_space] = element;
             // Verifica se o elemento inserido precisa ser realocado
@@ -45,9 +47,9 @@ public class ArrayHeap implements IArrayHeap {
     }
 
     @Override
-    public Integer removeMin() {
+    public Integer removeMin() throws EmptyHeapExceptions {
         if (this.isEmpty()) {
-            // exceção
+            throw new EmptyHeapExceptions("removeMin(): Empty Heap");
         }
 
         System.out.println("Estado atual da heap: ");
@@ -114,9 +116,9 @@ public class ArrayHeap implements IArrayHeap {
     }
 
     @Override
-    public Integer min() {
+    public Integer min() throws EmptyHeapExceptions {
         if (this.isEmpty()) {
-            // exceção
+            throw new EmptyHeapExceptions("min(): Empty Heap");
         }
 
         return this.heap[1];
@@ -129,4 +131,18 @@ public class ArrayHeap implements IArrayHeap {
         }
         System.out.println("");
     }
+
+    @Override
+    public void resize() {
+        Integer[] resized_heap = new Integer[this.capacity * 2];
+
+        for (Integer index = 1; index < this.next_space; index++) {
+            resized_heap[index] = this.heap[index];
+        }
+
+        this.capacity = this.capacity * 2;
+        this.heap = resized_heap;
+    }
+
+
 }
